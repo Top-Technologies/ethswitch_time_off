@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_leave_view_form_inherit_ethswitch" model="ir.ui.view">
+        <field name="name">hr.leave.view.form.inherit.ethswitch</field>
+        <field name="model">hr.leave</field>
+        <field name="inherit_id" ref="hr_holidays.hr_leave_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="%(action_hr_leave_reversal_wizard)d"
+                        string="Medical Reversal"
+                        type="action"
+                        class="btn-secondary"
+                        groups="hr_holidays.group_hr_holidays_user"
+                        invisible="state != 'validate'"
+                        help="Convert days to Sick Leave and restore Annual Leave balance due to hospitalization."/>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <field name="is_calendar_days" invisible="1"/>
+                <field name="can_reverse_by_manager" invisible="1"/>
+                <group string="EthSwitch Policy Details" name="ethswitch_leave_details" invisible="not presumed_delivery_date and not actual_delivery_date and not schedule_line_id and not approval_date">
+                    <group string="Maternity Information" invisible="not presumed_delivery_date and not actual_delivery_date">
+                        <field name="presumed_delivery_date" invisible="not presumed_delivery_date and not request_date_from"/>
+                        <field name="actual_delivery_date" invisible="not actual_delivery_date and not request_date_from"/>
+                    </group>
+                    <group string="Approval &amp; Schedule Reference">
+                        <field name="schedule_line_id" readonly="1" invisible="not schedule_line_id"/>
+                        <field name="approval_date" readonly="1" invisible="not approval_date"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

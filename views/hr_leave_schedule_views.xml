@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Schedule Tree View -->
+    <record id="view_hr_leave_schedule_tree" model="ir.ui.view">
+        <field name="name">hr.leave.schedule.list</field>
+        <field name="model">hr.leave.schedule</field>
+        <field name="arch" type="xml">
+            <list string="Annual Leave Schedules" sample="1">
+                <field name="name" decoration-bf="1"/>
+                <field name="employee_id"/>
+                <field name="department_id" optional="show"/>
+                <field name="manager_id" optional="show"/>
+                <field name="fiscal_year"/>
+                <field name="total_planned_days" sum="Total Planned Days"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'confirm'"
+                       decoration-success="state == 'validate'"
+                       decoration-danger="state == 'refuse'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Schedule Form View -->
+    <record id="view_hr_leave_schedule_form" model="ir.ui.view">
+        <field name="name">hr.leave.schedule.form</field>
+        <field name="model">hr.leave.schedule</field>
+        <field name="arch" type="xml">
+            <form string="Annual Leave Schedule">
+                <header>
+                    <button name="action_submit" string="Submit to Supervisor" type="object" class="btn-primary" invisible="state != 'draft'" data-hotkey="q"/>
+                    <button name="action_approve" string="Approve Schedule" type="object" class="btn-primary" invisible="state != 'confirm'" data-hotkey="v"/>
+                    <button name="action_refuse" string="Refuse" type="object" class="btn-secondary" invisible="state != 'confirm'" data-hotkey="x"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state not in ('confirm', 'refuse')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Annual Leave Schedule</span>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Employee &amp; Supervisor">
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="department_id"/>
+                            <field name="manager_id"/>
+                            <field name="leave_type_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Fiscal Year Parameters">
+                            <field name="fiscal_year" readonly="state != 'draft'"/>
+                            <label for="fiscal_year_start" string="Fiscal Year Range"/>
+                            <div class="o_row">
+                                <field name="fiscal_year_start" readonly="state != 'draft'"/>
+                                <span class="oe_grey"> to </span>
+                                <field name="fiscal_year_end" readonly="state != 'draft'"/>
+                            </div>
+                            <field name="total_planned_days" class="oe_inline font-weight-bold"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Scheduled Leave Periods" name="schedule_lines">
+                            <field name="line_ids" readonly="state == 'validate'">
+                                <list editable="bottom">
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="number_of_days" sum="Total Days"/>
+                                    <field name="fiscal_quarter"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'draft'"
+                                           decoration-success="state == 'approved'"
+                                           decoration-warning="state == 'taken'"
+                                           decoration-danger="state == 'cancelled'"/>
+                                    <field name="leave_id" optional="hide"/>
+                                    <field name="notes" placeholder="Optional notes..."/>
+                                    <button name="action_cancel_line" string="Cancel Line" type="object" icon="fa-times-circle"
+                                            invisible="state != 'approved'"
+                                            help="Cancel this scheduled leave block within policy window."/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group string="Approval Details" invisible="state not in ('validate', 'refuse')">
+                        <group>
+                            <field name="approved_by_id"/>
+                        </group>
+                        <group>
+                            <field name="approval_date"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Schedule Lines (Plan vs Actual Adherence) Tree View -->
+    <record id="view_hr_leave_schedule_line_tree" model="ir.ui.view">
+        <field name="name">hr.leave.schedule.line.list</field>
+        <field name="model">hr.leave.schedule.line</field>
+        <field name="arch" type="xml">
+            <list string="Scheduled Leave Adherence" sample="1" create="0">
+                <field name="employee_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="number_of_days" sum="Total Days"/>
+                <field name="fiscal_quarter"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'approved'"
+                       decoration-warning="state == 'taken'"
+                       decoration-danger="state == 'cancelled'"/>
+                <field name="leave_id"/>
+                <field name="notes" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Schedule Search View -->
+    <record id="view_hr_leave_schedule_search" model="ir.ui.view">
+        <field name="name">hr.leave.schedule.search</field>
+        <field name="model">hr.leave.schedule</field>
+        <field name="arch" type="xml">
+            <search string="Search Schedules">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="fiscal_year"/>
+                <separator/>
+                <filter name="my_schedules" string="My Schedules" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter name="to_approve" string="To Approve" domain="[('state', '=', 'confirm')]"/>
+                <filter name="approved" string="Approved" domain="[('state', '=', 'validate')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_employee" string="Employee" domain="[]" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_department" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_fiscal_year" string="Fiscal Year" domain="[]" context="{'group_by': 'fiscal_year'}"/>
+                    <filter name="group_status" string="Status" domain="[]" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_hr_leave_schedule" model="ir.actions.act_window">
+        <field name="name">Annual Leave Schedules</field>
+        <field name="res_model">hr.leave.schedule</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hr_leave_schedule_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Plan Annual Leave for the Coming Fiscal Year
+            </p>
+            <p>
+                Employees schedule their annual leave blocks for the coming fiscal year in advance. Once approved, the days are booked and employees are expected to follow the schedule.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_my_hr_leave_schedule" model="ir.actions.act_window">
+        <field name="name">My Leave Schedule</field>
+        <field name="res_model">hr.leave.schedule</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="search_view_id" ref="view_hr_leave_schedule_search"/>
+    </record>
+
+    <record id="action_hr_leave_schedule_adherence" model="ir.actions.act_window">
+        <field name="name">Leave Schedule Adherence</field>
+        <field name="res_model">hr.leave.schedule.line</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_group_employee': 1}</field>
+    </record>
+</odoo>

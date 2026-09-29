@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Postponement Tree View -->
+    <record id="view_hr_leave_postponement_tree" model="ir.ui.view">
+        <field name="name">hr.leave.postponement.list</field>
+        <field name="model">hr.leave.postponement</field>
+        <field name="arch" type="xml">
+            <list string="Leave Postponements" sample="1">
+                <field name="name" decoration-bf="1"/>
+                <field name="employee_id"/>
+                <field name="department_id" optional="show"/>
+                <field name="fiscal_year"/>
+                <field name="days_to_postpone" sum="Total Postponed Days"/>
+                <field name="original_expiry_date"/>
+                <field name="new_expiry_date"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'confirm'"
+                       decoration-success="state == 'validate'"
+                       decoration-danger="state == 'refuse'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Postponement Form View -->
+    <record id="view_hr_leave_postponement_form" model="ir.ui.view">
+        <field name="name">hr.leave.postponement.form</field>
+        <field name="model">hr.leave.postponement</field>
+        <field name="arch" type="xml">
+            <form string="Leave Postponement Request">
+                <header>
+                    <button name="action_submit" string="Submit to HR" type="object" class="btn-primary" invisible="state != 'draft'" data-hotkey="q"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-primary" groups="hr_holidays.group_hr_holidays_user" invisible="state != 'confirm'" data-hotkey="v"/>
+                    <button name="action_refuse" string="Refuse" type="object" class="btn-secondary" groups="hr_holidays.group_hr_holidays_user" invisible="state != 'confirm'" data-hotkey="x"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state not in ('confirm', 'refuse')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Smart button to allocation if created -->
+                    </div>
+                    <div class="oe_title">
+                        <span class="o_form_label">Postponement Request</span>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Employee Information">
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="department_id"/>
+                            <field name="manager_id"/>
+                            <field name="leave_type_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Postponement Details">
+                            <field name="fiscal_year" readonly="state != 'draft'"/>
+                            <field name="days_to_postpone" readonly="state != 'draft'"/>
+                            <field name="original_expiry_date" readonly="state != 'draft'"/>
+                            <field name="new_expiry_date" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Justification">
+                        <field name="reason" placeholder="Detail the operational workload or circumstances requiring this postponement..." readonly="state != 'draft'"/>
+                    </group>
+                    <group string="HR Approval Information" invisible="state not in ('validate', 'refuse')">
+                        <group>
+                            <field name="approved_by_id"/>
+                            <field name="approval_date"/>
+                        </group>
+                        <group>
+                            <field name="allocation_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Postponement Search View -->
+    <record id="view_hr_leave_postponement_search" model="ir.ui.view">
+        <field name="name">hr.leave.postponement.search</field>
+        <field name="model">hr.leave.postponement</field>
+        <field name="arch" type="xml">
+            <search string="Search Postponements">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="fiscal_year"/>
+                <separator/>
+                <filter name="my_postponements" string="My Requests" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter name="to_approve" string="To Approve" domain="[('state', '=', 'confirm')]"/>
+                <filter name="approved" string="Approved" domain="[('state', '=', 'validate')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_employee" string="Employee" domain="[]" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_department" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_fiscal_year" string="Fiscal Year" domain="[]" context="{'group_by': 'fiscal_year'}"/>
+                    <filter name="group_status" string="Status" domain="[]" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_hr_leave_postponement" model="ir.actions.act_window">
+        <field name="name">Leave Postponements</field>
+        <field name="res_model">hr.leave.postponement</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hr_leave_postponement_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Submit an Annual Leave Postponement Request
+            </p>
+            <p>
+                Permits employees to postpone accumulated annual leave past the normal two-year expiration period upon HR approval.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_my_hr_leave_postponement" model="ir.actions.act_window">
+        <field name="name">My Postponement Requests</field>
+        <field name="res_model">hr.leave.postponement</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="search_view_id" ref="view_hr_leave_postponement_search"/>
+    </record>
+</odoo>

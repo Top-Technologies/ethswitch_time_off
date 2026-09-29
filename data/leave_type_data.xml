@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- 1. Annual Leave -->
+        <record id="leave_type_annual_leave" model="hr.leave.type">
+            <field name="name">Annual Leave</field>
+            <field name="requires_allocation">yes</field>
+            <field name="request_unit">half_day</field>
+            <field name="count_calendar_days">False</field>
+            <field name="gender_restriction">all</field>
+            <field name="permanent_only">True</field>
+            <field name="color">4</field>
+        </record>
+
+        <!-- 2. Sick Leave -->
+        <record id="leave_type_sick_leave" model="hr.leave.type">
+            <field name="name">Sick Leave</field>
+            <field name="requires_allocation">no</field>
+            <field name="request_unit">day</field>
+            <field name="count_calendar_days">True</field>
+            <field name="gender_restriction">all</field>
+            <field name="support_document">True</field>
+            <field name="color">1</field>
+        </record>
+
+        <!-- 3. Prenatal Leave -->
+        <record id="leave_type_prenatal_leave" model="hr.leave.type">
+            <field name="name">Prenatal Leave</field>
+            <field name="requires_allocation">no</field>
+            <field name="request_unit">day</field>
+            <field name="count_calendar_days">True</field>
+            <field name="fixed_duration">30.0</field>
+            <field name="gender_restriction">female</field>
+            <field name="color">6</field>
+        </record>
+
+        <!-- 4. Postnatal Leave -->
+        <record id="leave_type_postnatal_leave" model="hr.leave.type">
+            <field name="name">Postnatal Leave</field>
+            <field name="requires_allocation">no</field>
+            <field name="request_unit">day</field>
+            <field name="count_calendar_days">True</field>
+            <field name="fixed_duration">90.0</field>
+            <field name="gender_restriction">female</field>
+            <field name="color">9</field>
+        </record>
+
+        <!-- 5. Paternity Leave -->
+        <record id="leave_type_paternity_leave" model="hr.leave.type">
+            <field name="name">Paternity Leave</field>
+            <field name="requires_allocation">no</field>
+            <field name="request_unit">day</field>
+            <field name="count_calendar_days">True</field>
+            <field name="fixed_duration">3.0</field>
+            <field name="gender_restriction">male</field>
+            <field name="color">7</field>
+        </record>
+
+        <!-- 6. Wedding Leave -->
+        <record id="leave_type_wedding_leave" model="hr.leave.type">
+            <field name="name">Wedding Leave</field>
+            <field name="requires_allocation">no</field>
+            <field name="request_unit">day</field>
+            <field name="count_calendar_days">False</field>
+            <field name="max_duration_per_request">3.0</field>
+            <field name="gender_restriction">all</field>
+            <field name="color">5</field>
+        </record>
+
+        <!-- 7. Mourning Leave -->
+        <record id="leave_type_mourning_leave" model="hr.leave.type">
+            <field name="name">Mourning Leave</field>
+            <field name="requires_allocation">no</field>
+            <field name="request_unit">day</field>
+            <field name="count_calendar_days">False</field>
+            <field name="max_duration_per_request">3.0</field>
+            <field name="gender_restriction">all</field>
+            <field name="color">8</field>
+        </record>
+
+        <!-- 8. Leave Without Pay -->
+        <record id="leave_type_unpaid_leave" model="hr.leave.type">
+            <field name="name">Leave Without Pay</field>
+            <field name="requires_allocation">no</field>
+            <field name="request_unit">day</field>
+            <field name="count_calendar_days">False</field>
+            <field name="require_zero_annual_balance">True</field>
+            <field name="color">0</field>
+        </record>
+
+        <!-- 9. Special Leave -->
+        <record id="leave_type_special_leave" model="hr.leave.type">
+            <field name="name">Special Leave</field>
+            <field name="requires_allocation">yes</field>
+            <field name="request_unit">day</field>
+            <field name="count_calendar_days">False</field>
+            <field name="color">2</field>
+        </record>
+
+        <!-- 10. Leave of Absence (Deducts from Annual Leave) -->
+        <record id="leave_type_leave_of_absence" model="hr.leave.type">
+            <field name="name">Leave of Absence</field>
+            <field name="requires_allocation">no</field>
+            <field name="request_unit">day</field>
+            <field name="count_calendar_days">False</field>
+            <field name="deduct_from_type_id" ref="leave_type_annual_leave"/>
+            <field name="color">3</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Leave Expiry Warning Email Template -->
+        <record id="mail_template_leave_expiry_warning" model="mail.template">
+            <field name="name">EthSwitch: Annual Leave Expiry Notice</field>
+            <field name="model_id" ref="hr.model_hr_employee"/>
+            <field name="subject">Notice: Impending Expiry of Accumulated Annual Leave - {{ object.name }}</field>
+            <field name="email_from">{{ (object.company_id.email or 'noreply@ethswitch.com') }}</field>
+            <field name="email_to">{{ object.work_email }}</field>
+            <field name="email_cc">{{ object.parent_id.work_email or '' }}</field>
+            <field name="description">Sent to employee and supervisor when accumulated annual leave is nearing the 2-year expiration deadline.</field>
+            <field name="body_html" type="html">
+                <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #333333; line-height: 1.6;">
+                    <p>Dear <t t-out="object.name or ''"/>,</p>
+                    <p>This is a formal notification regarding your accumulated annual leave balance at EthSwitch S.C.</p>
+                    <p>According to EthSwitch Leave Policy, annual leave may be accumulated for a maximum of <strong>two budget years</strong>. Any leave balance accumulated beyond this limit will expire unless an official <strong>Leave Postponement</strong> is approved by the HR Department.</p>
+                    
+                    <div style="background-color: #f8f9fa; border-left: 4px solid #f0ad4e; padding: 12px; margin: 15px 0;">
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li><strong>Leave Days Approaching Expiry:</strong> <t t-out="ctx.get('expiring_days', 'N/A')"/> days</li>
+                            <li><strong>Expiration Date:</strong> <t t-out="ctx.get('expiry_date', 'N/A')"/></li>
+                        </ul>
+                    </div>
+
+                    <p>Please coordinate with your immediate supervisor (<t t-out="object.parent_id.name or 'Supervisor'"/>) to utilize this leave or submit a Leave Postponement request via the ERP system before the expiration date.</p>
+                    <p>Best regards,<br/><strong>Human Resources Department</strong><br/>EthSwitch S.C.</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Annual Leave Schedule Approved Email Template -->
+        <record id="mail_template_schedule_approved" model="mail.template">
+            <field name="name">EthSwitch: Annual Leave Schedule Approved</field>
+            <field name="model_id" ref="ethswitch_time_off.model_hr_leave_schedule"/>
+            <field name="subject">Approved: Your Annual Leave Schedule for {{ object.fiscal_year }}</field>
+            <field name="email_from">{{ (object.employee_id.company_id.email or 'noreply@ethswitch.com') }}</field>
+            <field name="email_to">{{ object.employee_id.work_email }}</field>
+            <field name="description">Sent to employee when their annual leave schedule for the fiscal year has been approved.</field>
+            <field name="body_html" type="html">
+                <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #333333; line-height: 1.6;">
+                    <p>Dear <t t-out="object.employee_id.name or ''"/>,</p>
+                    <p>We are pleased to inform you that your Annual Leave Schedule for fiscal year <strong><t t-out="object.fiscal_year or ''"/></strong> has been approved.</p>
+                    
+                    <div style="background-color: #e8f5e9; border-left: 4px solid #4caf50; padding: 12px; margin: 15px 0;">
+                        <p style="margin: 0 0 8px 0;"><strong>Schedule Summary:</strong></p>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li><strong>Total Planned Days:</strong> <t t-out="object.total_planned_days or 0"/> days</li>
+                            <li><strong>Approved By:</strong> <t t-out="object.approved_by_id.name or 'Supervisor'"/></li>
+                            <li><strong>Approval Date:</strong> <t t-out="object.approval_date.strftime('%Y-%m-%d') if object.approval_date else ''"/></li>
+                        </ul>
+                    </div>
+
+                    <p><strong>Important:</strong> As per company policy, you are expected to follow this schedule for your annual leave utilization. Any changes or reversals must be submitted for supervisor approval within the designated fiscal quarter.</p>
+                    <p>Best regards,<br/><strong>Human Resources Department</strong><br/>EthSwitch S.C.</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

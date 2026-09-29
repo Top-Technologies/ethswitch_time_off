@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_inherit_ethswitch" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.ethswitch</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="%(hr_holidays.hr_leave_action_action_approve_department)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-calendar"
+                        context="{'search_default_employee_id': id, 'default_employee_id': id}"
+                        groups="hr_holidays.group_hr_holidays_user">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="remaining_annual_leaves" widget="statinfo" nolabel="1"/>
+                        </span>
+                        <span class="o_stat_text">Annual Leave</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Leave Balance &amp; Valuation" name="leave_valuation" groups="hr_holidays.group_hr_holidays_user">
+                    <group>
+                        <group string="Annual Leave Entitlement (Days)">
+                            <field name="accrued_annual_leaves"/>
+                            <field name="utilized_annual_leaves"/>
+                            <field name="remaining_annual_leaves" class="font-weight-bold"/>
+                        </group>
+                        <group string="Monetary Valuation (Birr)">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="daily_wage_rate" widget="monetary"/>
+                            <field name="annual_leave_monetary_value" widget="monetary" class="font-weight-bold text-primary"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

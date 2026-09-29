@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_leave_postponement_user,hr.leave.postponement.user,model_hr_leave_postponement,base.group_user,1,1,1,0
+access_hr_leave_postponement_officer,hr.leave.postponement.officer,model_hr_leave_postponement,hr_holidays.group_hr_holidays_user,1,1,1,1
+access_hr_leave_schedule_user,hr.leave.schedule.user,model_hr_leave_schedule,base.group_user,1,1,1,0
+access_hr_leave_schedule_officer,hr.leave.schedule.officer,model_hr_leave_schedule,hr_holidays.group_hr_holidays_user,1,1,1,1
+access_hr_leave_schedule_line_user,hr.leave.schedule.line.user,model_hr_leave_schedule_line,base.group_user,1,1,1,0
+access_hr_leave_schedule_line_officer,hr.leave.schedule.line.officer,model_hr_leave_schedule_line,hr_holidays.group_hr_holidays_user,1,1,1,1
+access_hr_leave_reversal_wizard_user,hr.leave.reversal.wizard.user,model_hr_leave_reversal_wizard,base.group_user,1,1,1,1

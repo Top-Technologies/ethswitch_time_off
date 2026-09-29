@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- My Time Off Submenus -->
+    <menuitem id="menu_my_hr_leave_schedule"
+              name="My Annual Schedule"
+              parent="hr_holidays.menu_hr_holidays_my_leaves"
+              action="action_my_hr_leave_schedule"
+              sequence="25"/>
+
+    <menuitem id="menu_my_hr_leave_postponement"
+              name="My Postponements"
+              parent="hr_holidays.menu_hr_holidays_my_leaves"
+              action="action_my_hr_leave_postponement"
+              sequence="26"/>
+
+    <!-- Management Submenus -->
+    <menuitem id="menu_hr_leave_schedule"
+              name="Leave Schedules"
+              parent="hr_holidays.menu_hr_holidays_management"
+              action="action_hr_leave_schedule"
+              sequence="15"/>
+
+    <menuitem id="menu_hr_leave_postponement"
+              name="Leave Postponements"
+              parent="hr_holidays.menu_hr_holidays_management"
+              action="action_hr_leave_postponement"
+              sequence="16"/>
+
+    <!-- Reporting Submenu -->
+    <menuitem id="menu_hr_leave_schedule_adherence"
+              name="Schedule Adherence"
+              parent="hr_holidays.menu_hr_holidays_report"
+              action="action_hr_leave_schedule_adherence"
+              sequence="20"/>
+</odoo>

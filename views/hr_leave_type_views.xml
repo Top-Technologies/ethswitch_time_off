@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="edit_holiday_status_form_inherit_ethswitch" model="ir.ui.view">
+        <field name="name">hr.leave.type.form.inherit.ethswitch</field>
+        <field name="model">hr.leave.type</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="EthSwitch Rules &amp; Restrictions" name="ethswitch_rules">
+                    <group string="Duration &amp; Calculation">
+                        <field name="count_calendar_days"/>
+                        <field name="fixed_duration"/>
+                        <field name="max_duration_per_request"/>
+                    </group>
+                    <group string="Eligibility &amp; Balance Rules">
+                        <field name="gender_restriction"/>
+                        <field name="permanent_only"/>
+                        <field name="deduct_from_type_id" options="{'no_create': True}"/>
+                        <field name="require_zero_annual_balance"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
